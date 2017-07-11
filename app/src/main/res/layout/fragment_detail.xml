@@ -1,0 +1,82 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_detail_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lol.fwen.progress.DetailFragment"
+    android:clickable="true"
+    android:background="@color/cardview_light_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/feed_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/feed_margin">
+
+            <ImageView
+                android:id="@+id/authorPic"
+                android:layout_width="@dimen/feed_author_pic"
+                android:layout_height="@dimen/feed_author_pic"
+                android:scaleType="fitCenter"
+                android:paddingTop="@dimen/feed_margin"
+                android:src="@drawable/empty">
+            </ImageView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/feed_margin"
+                android:layout_marginStart="@dimen/feed_margin"
+                android:orientation="vertical"
+                android:layout_weight="19">
+
+                <TextView
+                    android:id="@+id/detailFragment_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Unknown" />
+
+                <TextView
+                    android:id="@+id/detailFragment_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/detailFragment_src_icon"
+                android:layout_width="@dimen/feed_src_icon"
+                android:layout_height="@dimen/feed_src_icon"
+                android:src="@drawable/twitter_icon"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/feed_margin">
+
+            <TextView
+                android:id="@+id/detailFragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unknown"
+                android:autoLink="web"/>
+
+           <ImageView
+                android:id="@+id/detailFragment_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription=""
+                android:scaleType="fitCenter"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>
