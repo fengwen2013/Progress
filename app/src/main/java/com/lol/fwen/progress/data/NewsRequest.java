@@ -3,15 +3,12 @@ package com.lol.fwen.progress.data;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.lol.fwen.progress.newsapi.NewsApiCallBack;
+import com.lol.fwen.progress.newsapi.NewsApiRequest;
+import com.lol.fwen.progress.newsapi.NewsApiResponse;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.Collections;
 import java.util.Date;
 
@@ -87,84 +84,5 @@ public class NewsRequest extends FeedRequest {
     public void execute() {
         super.execute();
         request.executeAsync();
-    }
-
-    class NewsApiRequest {
-        NewsApiCallBack callBack;
-        StringBuilder urlstr = new StringBuilder("https://newsapi.org/v1/articles?sortBy=top&apiKey=c27cd277d5674439bc263995aefa4117");
-
-        public NewsApiRequest(Bundle params, NewsApiCallBack callBack) {
-            String source = params.getString("source");
-
-            urlstr.append("&source=");
-            urlstr.append(source);
-            this.callBack = callBack;
-        }
-
-        public void executeAsync() {
-            URL url;
-            HttpURLConnection urlConnection = null;
-            NewsApiResponse newsApiResponse = new NewsApiResponse();
-
-            try {
-                url = new URL(urlstr.toString());
-
-                urlConnection = (HttpURLConnection) url
-                        .openConnection();
-
-                if (urlConnection.getResponseCode() == 200) {
-                    InputStream in = urlConnection.getInputStream();
-
-                    BufferedReader bread = new BufferedReader(new InputStreamReader(in));
-
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = bread.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-
-                    newsApiResponse.setData(response.toString());
-                    in.close();
-                    Log.e("news", newsApiResponse.data);
-                    callBack.onSuccess(newsApiResponse);
-                } else {
-                    callBack.onFail();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-        }
-
-    }
-
-    class NewsApiResponse {
-        String data;
-
-        public JSONObject getJSONObject() {
-            JSONObject jsonObject = null;
-
-            try {
-                jsonObject = new JSONObject(data);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                return (jsonObject);
-            }
-        }
-
-        public void setData(String s) {
-            data = s;
-        }
-    }
-
-    interface NewsApiCallBack {
-        void onSuccess(NewsApiResponse response);
-        void onFail();
     }
 }

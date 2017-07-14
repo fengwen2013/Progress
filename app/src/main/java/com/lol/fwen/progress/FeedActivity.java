@@ -22,6 +22,7 @@ import com.lol.fwen.progress.data.ImageCache;
 import com.lol.fwen.progress.data.NewsRequest;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 import com.lol.fwen.progress.data.TwitterRequest;
+import com.lol.fwen.progress.newsapi.NewsApiConfig;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -57,7 +58,6 @@ public class FeedActivity
 
     private void initViews() {
         setContentView(R.layout.activity_feed);
-
         LoginButton fLoginButton = (LoginButton) findViewById(R.id.facebook_login_button);
         Fragment newFragment = new FeedListFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -116,6 +116,7 @@ public class FeedActivity
                 .debug(true)
                 .build();
         Twitter.initialize(config);
+        NewsApiConfig.init(this);
         imageCache = ImageCache.getInstance();
         requestSet = initRequest();
     }
