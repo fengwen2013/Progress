@@ -11,15 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.facebook.login.widget.LoginButton
+        <ImageButton
             android:id="@+id/facebook_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/facebook_button"/>
 
-        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+        <ImageButton
             android:id="@+id/twitter_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp" />
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/twitter_button"/>
     </LinearLayout>
 
     <FrameLayout

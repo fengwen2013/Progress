@@ -64,7 +64,7 @@ public class FacebookRequest extends FeedRequest {
     }
 
     @Override
-    public int getSelf() {
-        return (FeedRequest.FACKBOOK_LOGIN);
+    public RequestType getSelf() {
+        return (RequestType.FACKBOOK);
     }
 }

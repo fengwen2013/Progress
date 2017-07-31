@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FeedRequest implements SocialNetWorkRequest, Parcelable {
-    public static final int GENERAL_LOGIN = 0;
-    public static final int FACKBOOK_LOGIN = 1;
-    public static final int TWITTER_LOGIN = 2;
-    public static final int LINKEDIN_LOGIN = 3;
+    public enum RequestType {
+        GENERAL, FACKBOOK, TWITTER, LINKEDIN, NEWSAPI
+    }
+
     public static final AtomicInteger executeSum = new AtomicInteger(0);
 
     boolean selected;
@@ -58,8 +58,9 @@ public class FeedRequest implements SocialNetWorkRequest, Parcelable {
         return (feedList);
     }
 
-    public int getSelf() {
-        return (FeedRequest.GENERAL_LOGIN);
+    @Override
+    public RequestType getSelf() {
+        return (RequestType.GENERAL);
     }
 
     public static void executeInc() {

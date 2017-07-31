@@ -85,4 +85,9 @@ public class NewsRequest extends FeedRequest {
         super.execute();
         request.executeAsync();
     }
+
+    @Override
+    public RequestType getSelf() {
+        return (RequestType.NEWSAPI);
+    }
 }

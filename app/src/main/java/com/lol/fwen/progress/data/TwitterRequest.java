@@ -45,8 +45,6 @@ public class TwitterRequest extends FeedRequest {
             }
 
             public void failure(TwitterException exception) {
-                //Do something on failure
-
                 FeedRequest.executeDec();
                 Log.e("twitter request", "fail end");
             }
@@ -60,5 +58,10 @@ public class TwitterRequest extends FeedRequest {
         Log.v("Twitter", "Execute");
         Call<List<Tweet>> call = statusesService.homeTimeline(20, sinceId, null, null, null, null, null);
         call.enqueue(callback);
+    }
+
+    @Override
+    public RequestType getSelf() {
+        return (RequestType.TWITTER);
     }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 public interface SocialNetWorkRequest {
     void execute() throws InterruptedException;
     List<Feed> getList();
+    FeedRequest.RequestType getSelf();
 }

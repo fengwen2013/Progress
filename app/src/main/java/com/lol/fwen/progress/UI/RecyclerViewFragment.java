@@ -16,9 +16,10 @@ import android.widget.RadioButton;
 import com.lol.fwen.progress.R;
 import com.lol.fwen.progress.asynctask.DownloadDataAsyncTask;
 import com.lol.fwen.progress.data.Feed;
+import com.lol.fwen.progress.data.FeedRequest;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 
-import java.util.Set;
+import java.util.HashMap;
 
 public class RecyclerViewFragment extends Fragment {
 
@@ -64,7 +65,7 @@ public class RecyclerViewFragment extends Fragment {
             @Override
             public void onRefresh() {
                 Log.d("swipeLayout", "OnRefresh");
-                updateList(((FeedActivity)getActivity()).requestSet);
+                updateList(((FeedActivity)getActivity()).requestMap);
                 swipeLayout.setRefreshing(false);
             }
         });
@@ -151,7 +152,7 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateList(((FeedActivity)getActivity()).requestSet);
+        updateList(((FeedActivity)getActivity()).requestMap);
     }
 
     @Override
@@ -165,8 +166,8 @@ public class RecyclerViewFragment extends Fragment {
         void onFragmentItemClick(Feed item);
     }
 
-    public void updateList(Set<SocialNetWorkRequest> set) {
+    public void updateList(HashMap<FeedRequest.RequestType, SocialNetWorkRequest> map) {
         Log.e("updateList", "update");
-        new DownloadDataAsyncTask(recyclerView, adapter, set).execute();
+        new DownloadDataAsyncTask(recyclerView, adapter, map).execute();
     }
 }

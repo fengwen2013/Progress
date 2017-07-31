@@ -11,31 +11,32 @@ import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.FeedRequest;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 
-public class DownloadDataAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
+public class DownloadDataAsyncTask extends AsyncTask<Void, Void, Integer> {
     RecyclerView recyclerView;
     RecyclerViewAdapter adapter;
-    Set<SocialNetWorkRequest> requestSet;
+    HashMap<FeedRequest.RequestType, SocialNetWorkRequest> requestMap;
     private String TAG = "DownloadDataAsyncTask";
 
     public DownloadDataAsyncTask(RecyclerView recyclerView, RecyclerViewAdapter adapter,
-                                 Set<SocialNetWorkRequest> requestSet) {
+                                 HashMap<FeedRequest.RequestType, SocialNetWorkRequest> requestMap) {
         this.recyclerView = recyclerView;
         this.adapter = adapter;
-        this.requestSet = requestSet;
+        this.requestMap = requestMap;
     }
 
     @Override
-    protected List<Feed> doInBackground(Void... voids) {
+    protected Integer doInBackground(Void... voids) {
         Log.d(TAG, "doInBackground");
         List<List<Feed>> lists = new LinkedList<>();
 
         Log.d(TAG, "dobackground - start: " + FeedRequest.executeGet());
-        for (SocialNetWorkRequest snRequest : requestSet) {
+        for (FeedRequest.RequestType type : requestMap.keySet()) {
+            SocialNetWorkRequest snRequest = requestMap.get(type);
             try {
                 snRequest.execute();
             } catch (InterruptedException e) {
@@ -48,26 +49,32 @@ public class DownloadDataAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
         }
 
         Log.d(TAG, "doInBackground - all finished");
+        int nFeeds = 0;
 
-        for (SocialNetWorkRequest snRequest : requestSet) {
+        for (FeedRequest.RequestType type : requestMap.keySet()) {
+            SocialNetWorkRequest snRequest = requestMap.get(type);
             lists.add(snRequest.getList());
+            nFeeds += snRequest.getList().size();
         }
 
-        List<Feed> res = merge(lists);
-        adapter.addList(res);
+        if (nFeeds > 0) {
+            lists.add(adapter.getList());
+            List<Feed> res = merge(lists);
+            adapter.setList(res);
+        }
 
-        return (res);
+        return (nFeeds);
     }
 
     @Override
-    protected void onPostExecute(List<Feed> feeds) {
+    protected void onPostExecute(Integer nFeeds) {
         if (recyclerView.getAdapter() == null) {
             recyclerView.setAdapter(adapter);
         }
 
         adapter.notifyDataSetChanged();
         Snackbar.make(recyclerView,
-                "Loaded " + feeds.size() + " feed(s)", Snackbar.LENGTH_LONG)
+                "Loaded " + nFeeds + " feed(s)", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 

@@ -32,6 +32,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public List<Feed> getList() {
+        return (data);
+    }
+
     public void addList(List<Feed> newData) {
         Log.d(TAG, "addList");
         ArrayList<Feed> tmp = new ArrayList<>();
@@ -39,6 +43,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
         tmp.addAll(newData);
         tmp.addAll(data);
         data = tmp;
+    }
+
+    public void setList(List<Feed> newData) {
+        data = newData;
     }
 
     public Feed getItem(int position) {
