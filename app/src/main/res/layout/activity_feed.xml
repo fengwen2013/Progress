@@ -5,7 +5,7 @@
     android:id="@+id/activity_feed"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context="com.lol.fwen.progress.FeedActivity">
+    tools:context="com.lol.fwen.progress.UI.FeedActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

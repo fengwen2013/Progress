@@ -3,7 +3,7 @@ package com.lol.fwen.progress.newsapi;
 
 import android.content.Context;
 
-import com.lol.fwen.progress.FeedActivity;
+import com.lol.fwen.progress.UI.FeedActivity;
 import com.lol.fwen.progress.R;
 
 public class NewsApiConfig {

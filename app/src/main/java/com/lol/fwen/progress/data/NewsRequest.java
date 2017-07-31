@@ -29,7 +29,7 @@ public class NewsRequest extends FeedRequest {
             @Override
             public void onSuccess(NewsApiResponse response) {
                 try {
-                    Log.e("NewsApi request", "start");
+                    Log.v("NewsApi request", "start");
 
                     JSONObject jObjResponse = response.getJSONObject();
                     JSONArray jArray = jObjResponse.getJSONArray("articles");
@@ -42,7 +42,7 @@ public class NewsRequest extends FeedRequest {
                             feedList.add(feed);
                         }
 
-                        Log.e("data[]", feed.toString());
+                        //Log.v("data[]", feed.toString());
 
                     }
 

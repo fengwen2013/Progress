@@ -1,10 +1,13 @@
 package com.lol.fwen.progress.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class FeedRequest implements SocialNetWorkRequest {
+public class FeedRequest implements SocialNetWorkRequest, Parcelable {
     public static final int GENERAL_LOGIN = 0;
     public static final int FACKBOOK_LOGIN = 1;
     public static final int TWITTER_LOGIN = 2;
@@ -14,11 +17,41 @@ public abstract class FeedRequest implements SocialNetWorkRequest {
     boolean selected;
     public List<Feed> feedList;
 
+    public FeedRequest() {}
+
+    private FeedRequest(Parcel in) {
+        feedList = new LinkedList<>();
+
+        in.readList(feedList, List.class.getClassLoader());
+    }
+
     @Override
     public void execute() {
         feedList = new LinkedList<>();
         FeedRequest.executeInc();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(feedList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<FeedRequest> CREATOR = new Parcelable.Creator<FeedRequest>() {
+        @Override
+        public FeedRequest createFromParcel(Parcel in) {
+            return new FeedRequest(in);
+        }
+
+        @Override
+        public FeedRequest[] newArray(int size) {
+            return new FeedRequest[size];
+        }
+    };
 
     @Override
     public List<Feed> getList() {

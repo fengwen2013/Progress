@@ -26,9 +26,8 @@ public class FacebookRequest extends FeedRequest {
                     public void onCompleted(GraphResponse response) {
                         /* handle the result */
                         try {
-                            Log.e("facebook request", "start");
+                            Log.v("facebook request", "start");
                             JSONObject jObjResponse = new JSONObject(String.valueOf(response.getJSONObject()));
-
                             JSONArray jArray = jObjResponse.getJSONArray("data");
 
                             for (int i = 0; i < jArray.length(); i++) {
@@ -36,7 +35,7 @@ public class FacebookRequest extends FeedRequest {
                                 Feed feed = new Feed(jObject, Feed.FeedSrc.FACEBOOK);
 
                                 feedList.add(feed);
-                                Log.e("data[]", jObject.toString());
+                                //Log.v("data[]", jObject.toString());
                                 if (i == 0) {
                                     prevTime = String.valueOf(feed.getCreatedTime().getTime() / 1000);
                                 }

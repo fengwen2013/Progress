@@ -1,4 +1,4 @@
-package com.lol.fwen.progress;
+package com.lol.fwen.progress.UI;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lol.fwen.progress.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "tonywenlxf@gmail.com:hello"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -197,8 +197,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        //return email.contains("@");
+        return (true);
     }
 
     private boolean isPasswordValid(String password) {

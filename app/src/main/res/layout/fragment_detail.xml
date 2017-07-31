@@ -3,7 +3,7 @@
     android:id="@+id/fragment_detail_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lol.fwen.progress.DetailFragment"
+    tools:context="com.lol.fwen.progress.UI.DetailFragment"
     android:clickable="true"
     android:background="@color/cardview_light_background">
 

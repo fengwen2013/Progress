@@ -1,16 +1,14 @@
 package com.lol.fwen.progress.asynctask;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
+import com.lol.fwen.progress.UI.RecyclerViewAdapter;
 import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.FeedRequest;
-import com.lol.fwen.progress.R;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 
 import java.util.LinkedList;
@@ -18,26 +16,25 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-
-public class SendRequestAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
-    ListView listView;
-    ArrayAdapter adapter;
-    Activity activity;
+public class DownloadDataAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
+    RecyclerView recyclerView;
+    RecyclerViewAdapter adapter;
     Set<SocialNetWorkRequest> requestSet;
+    private String TAG = "DownloadDataAsyncTask";
 
-    public SendRequestAsyncTask(ListView listView, ArrayAdapter adapter, Set<SocialNetWorkRequest> requestSet) {
-        this.listView = listView;
+    public DownloadDataAsyncTask(RecyclerView recyclerView, RecyclerViewAdapter adapter,
+                                 Set<SocialNetWorkRequest> requestSet) {
+        this.recyclerView = recyclerView;
         this.adapter = adapter;
         this.requestSet = requestSet;
-        activity = (Activity)listView.getContext();
     }
 
     @Override
     protected List<Feed> doInBackground(Void... voids) {
-        Log.v("SendRequestAsyncTask", "doInBackground");
+        Log.d(TAG, "doInBackground");
         List<List<Feed>> lists = new LinkedList<>();
 
-        Log.e("dobackground", "start: " + FeedRequest.executeGet());
+        Log.d(TAG, "dobackground - start: " + FeedRequest.executeGet());
         for (SocialNetWorkRequest snRequest : requestSet) {
             try {
                 snRequest.execute();
@@ -46,50 +43,50 @@ public class SendRequestAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
             }
         }
 
-        Log.e("doInBackground", "spin wait");
-        while (FeedRequest.executeGet() != 0) {}
+        Log.d(TAG, "doInBackground - spin wait");
+        while (FeedRequest.executeGet() != 0) {
+        }
 
-        Log.e("doInBackground", "all finished");
+        Log.d(TAG, "doInBackground - all finished");
 
         for (SocialNetWorkRequest snRequest : requestSet) {
             lists.add(snRequest.getList());
         }
 
-        return (merge(lists));
+        List<Feed> res = merge(lists);
+        adapter.addList(res);
+
+        return (res);
     }
 
     @Override
     protected void onPostExecute(List<Feed> feeds) {
-        if (listView.getAdapter() == null) {
-            listView.setAdapter(adapter);
-        }
-
-        for (int i = feeds.size() - 1; i >= 0; i--) {
-            adapter.insert(feeds.get(i), 0);
+        if (recyclerView.getAdapter() == null) {
+            recyclerView.setAdapter(adapter);
         }
 
         adapter.notifyDataSetChanged();
-        Snackbar.make(activity.findViewById(R.id.activity_feed),
+        Snackbar.make(recyclerView,
                 "Loaded " + feeds.size() + " feed(s)", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 
     private List<Feed> merge(List<List<Feed>> lists) {
-        PriorityQueue<Pair> heap = new PriorityQueue();
+        PriorityQueue<DownloadDataAsyncTask.Pair> heap = new PriorityQueue();
         List<Feed> list = new LinkedList<>();
 
         for (List<Feed> l : lists) {
             if (l.size() != 0) {
-                heap.add(new Pair(l.get(0), l));
+                heap.add(new DownloadDataAsyncTask.Pair(l.get(0), l));
                 l.remove(0);
             }
         }
 
         while (!heap.isEmpty()) {
-            Pair p = heap.poll();
+            DownloadDataAsyncTask.Pair p = heap.poll();
             List<Feed> l = p.list;
 
-            Log.e("heap", p.feed.getCreatedTime().toString());
+            //Log.d("heap", p.feed.getCreatedTime().toString());
             list.add(p.feed);
             if (l.size() != 0) {
                 p.feed = l.get(0);
@@ -101,7 +98,7 @@ public class SendRequestAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
         return (list);
     }
 
-    class Pair implements Comparable<Pair>{
+    class Pair implements Comparable<DownloadDataAsyncTask.Pair> {
         Feed feed;
         List<Feed> list;
 
@@ -111,7 +108,7 @@ public class SendRequestAsyncTask extends AsyncTask<Void, Void, List<Feed>> {
         }
 
         @Override
-        public int compareTo(@NonNull Pair pair) {
+        public int compareTo(@NonNull DownloadDataAsyncTask.Pair pair) {
             return (pair.feed.compareTo(this.feed));
         }
     }

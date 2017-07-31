@@ -28,12 +28,12 @@ public class TwitterRequest extends FeedRequest {
             @Override
             public void success(Result<List<Tweet>> result) {
                 //Do something with result
-                Log.e("twitter request", "start");
+                Log.v("twitter request", "start");
                 List<Tweet> list = result.data;
 
                 for (Tweet t : list) {
                     feedList.add(new Feed(t));
-                    Log.e("twitter", t.user.name);
+                    //Log.e("twitter", t.user.name);
                 }
 
                 if (feedList.size() != 0) {
@@ -41,7 +41,7 @@ public class TwitterRequest extends FeedRequest {
                 }
 
                 FeedRequest.executeDec();
-                Log.e("twitter request", "end: " + FeedRequest.executeGet());
+                Log.v("twitter request", "end: " + FeedRequest.executeGet());
             }
 
             public void failure(TwitterException exception) {
