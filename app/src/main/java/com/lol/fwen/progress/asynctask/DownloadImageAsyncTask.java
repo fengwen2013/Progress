@@ -10,11 +10,11 @@ import com.lol.fwen.progress.data.ImageCache;
 
 import java.io.InputStream;
 
-public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
     ImageCache imageCache;
 
-    public DownloadImageTask(ImageView bmImage, ImageCache imageCache) {
+    public DownloadImageAsyncTask(ImageView bmImage, ImageCache imageCache) {
         this.bmImage = bmImage;
         this.imageCache = imageCache;
     }

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lol.fwen.progress.R;
-import com.lol.fwen.progress.asynctask.DownloadImageTask;
+import com.lol.fwen.progress.asynctask.DownloadImageAsyncTask;
 import com.lol.fwen.progress.data.Feed;
 
 public class DetailFragment extends Fragment {
@@ -52,12 +52,12 @@ public class DetailFragment extends Fragment {
         itemSrcIcon.setImageResource(Feed.getSrcImage(feed));
         if (feed.hasImage()) {
             ImageView imageView = (ImageView) view.findViewById(R.id.detailFragment_image);
-            new DownloadImageTask(imageView, ((FeedActivity)getActivity()).imageCache).execute(feed.getImageURL());
+            new DownloadImageAsyncTask(imageView, ((FeedActivity)getActivity()).imageCache).execute(feed.getImageURL());
         }
 
         if (feed.hasAuthorIcon()) {
             ImageView imageView = (ImageView) view.findViewById(R.id.authorPic);
-            new DownloadImageTask(imageView, ((FeedActivity)getActivity()).imageCache).execute(feed.getAuthorIcon());
+            new DownloadImageAsyncTask(imageView, ((FeedActivity)getActivity()).imageCache).execute(feed.getAuthorIcon());
         }
 
         return view;

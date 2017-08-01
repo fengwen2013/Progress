@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lol.fwen.progress.R;
-import com.lol.fwen.progress.asynctask.DownloadImageTask;
+import com.lol.fwen.progress.asynctask.DownloadImageAsyncTask;
 import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.ImageCache;
 
@@ -106,7 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
             srcIconImageView.setImageResource(Feed.getSrcImage(feed));
 
             if (feed.hasAuthorIcon()) {
-                new DownloadImageTask(authorIconImageView, imageCache).execute(feed.getAuthorIcon());
+                new DownloadImageAsyncTask(authorIconImageView, imageCache).execute(feed.getAuthorIcon());
             } else {
                 authorIconImageView.setImageResource(R.drawable.empty);
             }
