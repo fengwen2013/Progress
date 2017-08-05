@@ -1,63 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/feed_margin">
-
-        <ImageView
-            android:id="@+id/authorPic_item"
-            android:layout_width="@dimen/feed_author_pic"
-            android:layout_height="@dimen/feed_author_pic"
-            android:scaleType="fitCenter"
-            android:src="@drawable/empty"
-            android:contentDescription="">
-        </ImageView>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/card_margin"
+        app:cardElevation="@dimen/card_elevation"
+        app:cardCornerRadius="@dimen/card_item_radius">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/feed_margin"
-            android:layout_marginStart="@dimen/feed_margin"
-            android:layout_weight="19">
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/feed_margin"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/authorPic_item"
+                    android:layout_width="@dimen/feed_author_pic"
+                    android:layout_height="@dimen/feed_author_pic"
+                    android:contentDescription=""
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/empty"></ImageView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/feed_margin"
+                    android:layout_marginTop="@dimen/feed_margin"
+                    android:layout_weight="19"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/item_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/item_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/item_src_icon"
+                    android:layout_width="@dimen/feed_src_icon"
+                    android:layout_height="@dimen/feed_src_icon"
+                    android:layout_weight="1"
+                    android:src="@drawable/facebook_icon" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/item_author"
-                android:textStyle="bold"
+                android:id="@+id/item_content"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:linksClickable="true" />
 
-            <TextView
-                android:id="@+id/item_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/item_src_icon"
-            android:layout_width="@dimen/feed_src_icon"
-            android:layout_height="@dimen/feed_src_icon"
-            android:src="@drawable/facebook_icon"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/item_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:linksClickable="true"/>
-
-    <ImageView
-        android:id="@+id/item_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+    </android.support.v7.widget.CardView>
 </LinearLayout>

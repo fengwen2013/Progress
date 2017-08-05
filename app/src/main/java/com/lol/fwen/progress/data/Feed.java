@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 public class Feed
         implements Parcelable, Comparable<Feed> {
-    static String dateStrPattern = "EEE MMM dd yyyy HH:mm:ss";
+    public static final String dateStrPattern = "EEE MMM dd yyyy HH:mm:ss";
 
     public enum FeedSrc {
         DEFAULT, FACEBOOK, TWITTER, LINKEDIN, NEWSAPI_BLOOMBERG, NEWSAPI_GOOGLE;

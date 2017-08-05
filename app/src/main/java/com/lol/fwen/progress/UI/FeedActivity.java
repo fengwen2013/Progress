@@ -19,13 +19,10 @@ import com.facebook.login.LoginResult;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.lol.fwen.progress.R;
-import com.lol.fwen.progress.data.FacebookRequest;
 import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.FeedRequest;
+import com.lol.fwen.progress.data.FeedRequest.RequestType;
 import com.lol.fwen.progress.data.ImageCache;
-import com.lol.fwen.progress.data.NewsRequest;
-import com.lol.fwen.progress.data.SocialNetWorkRequest;
-import com.lol.fwen.progress.data.TwitterRequest;
 import com.lol.fwen.progress.newsapi.NewsApiConfig;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -38,18 +35,21 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FeedActivity
         extends AppCompatActivity
         implements RecyclerViewFragment.OnFragmentInteractionListener {
     private String TAG = "FeedActivity";
     private String REQUESTS_KEY = "REQUEST_KEY";
+    private String TAG_RECYCLER_VIEW_FRAGMENT = "RecyclerViewFragment";
+    private String TAG_DETAIL_FRAGMENT = "DetailFragment";
 
     ImageCache imageCache;
     ImageButton tLoginButton;
     ImageButton fLoginButton;
-    HashMap<FeedRequest.RequestType, SocialNetWorkRequest> requestMap;
+    Set<RequestType> requestTypes;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private LoginManager loginManager;
@@ -85,10 +85,22 @@ public class FeedActivity
 
         updateTwitterBtn();
 
-        Fragment newFragment = new RecyclerViewFragment();
+        RecyclerViewFragment recyclerViewFragment = (RecyclerViewFragment)getFragmentManager().
+                findFragmentByTag(TAG_RECYCLER_VIEW_FRAGMENT);
+        DetailFragment detailFragment = (DetailFragment)getFragmentManager().
+                findFragmentByTag(TAG_DETAIL_FRAGMENT);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.feed_fragment, newFragment);
-        //transaction.addToBackStack(null);
+
+        if (recyclerViewFragment == null) {
+            recyclerViewFragment = new RecyclerViewFragment();
+            transaction.add(recyclerViewFragment, TAG_RECYCLER_VIEW_FRAGMENT);
+        }
+
+        transaction.replace(R.id.feed_fragment, recyclerViewFragment);
+        if (detailFragment != null) {
+            transaction.add(R.id.feed_fragment, detailFragment);
+        }
+
         transaction.commit();
     }
 
@@ -96,7 +108,7 @@ public class FeedActivity
         TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         if (twitterSession != null) {
             TwitterCore.getInstance().getSessionManager().clearActiveSession();
-            requestMap.remove(FeedRequest.RequestType.TWITTER);
+            requestTypes.remove(RequestType.TWITTER);
             tLoginButton.setImageResource(R.drawable.twitter_button_grey);
         } else {
             twitterAuthClient.authorize(FeedActivity.this, new com.twitter.sdk.android.core.Callback<TwitterSession>() {
@@ -105,9 +117,7 @@ public class FeedActivity
                     Log.v("tlogin", "success");
                     Toast.makeText(FeedActivity.this, "Twitter login success", Toast.LENGTH_SHORT).show();
                     tLoginButton.setImageResource(R.drawable.twitter_button);
-
-                    SocialNetWorkRequest request = new TwitterRequest();
-                    requestMap.put(request.getSelf(), request);
+                    requestTypes.add(RequestType.TWITTER);
                 }
 
                 @Override
@@ -128,10 +138,15 @@ public class FeedActivity
 
         imageCache = ImageCache.getInstance();
         if (savedInstanceState != null) {
-            // To do
+            Object[] array = (Object[]) savedInstanceState.getSerializable(REQUESTS_KEY);
+            requestTypes = new HashSet<>();
 
+            for (Object type : array) {
+                Log.d("Type", type + "");
+                requestTypes.add((RequestType) type);
+            }
         } else {
-            requestMap = initRequest();
+            requestTypes = initRequest();
         }
     }
 
@@ -166,9 +181,7 @@ public class FeedActivity
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 Log.d("flogin", "onSuccess");
-                SocialNetWorkRequest request = new FacebookRequest();
-
-                requestMap.put(request.getSelf(), request);
+                requestTypes.add(RequestType.FACKBOOK);
                 updateFacebookBtn();
                 Toast.makeText(FeedActivity.this, "Facebook login success", Toast.LENGTH_SHORT).show();
             }
@@ -190,7 +203,7 @@ public class FeedActivity
     private void handleFacebookLogin() {
         if (AccessToken.getCurrentAccessToken() != null){
             loginManager.logOut();
-            requestMap.remove(FeedRequest.RequestType.FACKBOOK);
+            requestTypes.remove(RequestType.FACKBOOK);
         }else{
             accessTokenTracker.startTracking();
             loginManager.logInWithReadPermissions(this, Arrays.asList("user_posts", "email"));
@@ -214,19 +227,19 @@ public class FeedActivity
         }
     }
 
-    private HashMap<FeedRequest.RequestType, SocialNetWorkRequest> initRequest() {
-        HashMap<FeedRequest.RequestType, SocialNetWorkRequest> map = new HashMap<>();
+    private Set<RequestType> initRequest() {
+        Set<RequestType> set = new HashSet<>();
 
         if (checkLogin(FeedRequest.RequestType.FACKBOOK)) {
-            map.put(FeedRequest.RequestType.FACKBOOK, new FacebookRequest());
+            set.add(FeedRequest.RequestType.FACKBOOK);
         }
 
         if (checkLogin(FeedRequest.RequestType.TWITTER)){
-            map.put(FeedRequest.RequestType.TWITTER, new TwitterRequest());
+            set.add(FeedRequest.RequestType.TWITTER);
         }
 
-        map.put(FeedRequest.RequestType.NEWSAPI, new NewsRequest("google-news"));
-        return (map);
+        set.add(RequestType.NEWSAPI);
+        return (set);
     }
 
     private boolean checkLogin(FeedRequest.RequestType vendor) {
@@ -261,6 +274,7 @@ public class FeedActivity
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable(REQUESTS_KEY, requestTypes.toArray());
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -274,7 +288,7 @@ public class FeedActivity
         Bundle args = new Bundle();
         args.putParcelable(DetailFragment.ARG_FEED, item);
         newFragment.setArguments(args);
-        transaction.add(R.id.feed_fragment, newFragment);
+        transaction.add(R.id.feed_fragment, newFragment, TAG_DETAIL_FRAGMENT);
         transaction.addToBackStack(null);
         transaction.commit();
     }

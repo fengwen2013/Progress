@@ -3,6 +3,8 @@ package com.lol.fwen.progress.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.twitter.sdk.android.core.Twitter;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,5 +75,14 @@ public class FeedRequest implements SocialNetWorkRequest, Parcelable {
 
     public static int executeGet() {
         return (executeSum.get());
+    }
+
+    public static SocialNetWorkRequest createRequest(RequestType type) {
+        switch (type) {
+            case TWITTER: return (new TwitterRequest());
+            case FACKBOOK: return (new FacebookRequest());
+            case NEWSAPI: return (new NewsRequest("google-news"));
+            default: return (new FeedRequest());
+        }
     }
 }

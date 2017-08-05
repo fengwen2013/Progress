@@ -67,10 +67,5 @@ public class NewsApiRequest {
                 }
             }
         }.run();
-
-
     }
-
 }
-
-

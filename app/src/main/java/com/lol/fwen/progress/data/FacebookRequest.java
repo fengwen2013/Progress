@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class FacebookRequest extends FeedRequest {
 
     GraphRequest graphRequest;
-    String prevTime = "";
+    static String prevTime = "";
     Bundle params;
 
     public FacebookRequest() {

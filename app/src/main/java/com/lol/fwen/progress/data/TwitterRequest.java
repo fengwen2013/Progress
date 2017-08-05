@@ -17,7 +17,7 @@ import retrofit2.Call;
 public class TwitterRequest extends FeedRequest {
     public static String dateStrPattern = "EEE MMM dd HH:mm:ss Z yyyy";
     StatusesService statusesService;
-    Long sinceId = null;
+    static Long sinceId = null;
     Callback<List<Tweet>> callback;
 
     public TwitterRequest() {
@@ -56,7 +56,7 @@ public class TwitterRequest extends FeedRequest {
     public void execute() {
         super.execute();
         Log.v("Twitter", "Execute");
-        Call<List<Tweet>> call = statusesService.homeTimeline(20, sinceId, null, null, null, null, null);
+        Call<List<Tweet>> call = statusesService.homeTimeline(25, sinceId, null, null, null, null, null);
         call.enqueue(callback);
     }
 

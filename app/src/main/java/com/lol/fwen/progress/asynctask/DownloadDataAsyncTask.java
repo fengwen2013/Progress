@@ -9,24 +9,25 @@ import android.util.Log;
 import com.lol.fwen.progress.UI.RecyclerViewAdapter;
 import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.FeedRequest;
+import com.lol.fwen.progress.data.FeedRequest.RequestType;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class DownloadDataAsyncTask extends AsyncTask<Void, Void, Integer> {
     RecyclerView recyclerView;
     RecyclerViewAdapter adapter;
-    HashMap<FeedRequest.RequestType, SocialNetWorkRequest> requestMap;
+    Set<SocialNetWorkRequest> requestSet;
     private String TAG = "DownloadDataAsyncTask";
 
     public DownloadDataAsyncTask(RecyclerView recyclerView, RecyclerViewAdapter adapter,
-                                 HashMap<FeedRequest.RequestType, SocialNetWorkRequest> requestMap) {
+                                 Set<SocialNetWorkRequest> requestSet) {
         this.recyclerView = recyclerView;
         this.adapter = adapter;
-        this.requestMap = requestMap;
+        this.requestSet = requestSet;
     }
 
     @Override
@@ -35,8 +36,7 @@ public class DownloadDataAsyncTask extends AsyncTask<Void, Void, Integer> {
         List<List<Feed>> lists = new LinkedList<>();
 
         Log.d(TAG, "dobackground - start: " + FeedRequest.executeGet());
-        for (FeedRequest.RequestType type : requestMap.keySet()) {
-            SocialNetWorkRequest snRequest = requestMap.get(type);
+        for (SocialNetWorkRequest snRequest : requestSet) {
             try {
                 snRequest.execute();
             } catch (InterruptedException e) {
@@ -51,8 +51,7 @@ public class DownloadDataAsyncTask extends AsyncTask<Void, Void, Integer> {
         Log.d(TAG, "doInBackground - all finished");
         int nFeeds = 0;
 
-        for (FeedRequest.RequestType type : requestMap.keySet()) {
-            SocialNetWorkRequest snRequest = requestMap.get(type);
+        for (SocialNetWorkRequest snRequest: requestSet) {
             lists.add(snRequest.getList());
             nFeeds += snRequest.getList().size();
         }

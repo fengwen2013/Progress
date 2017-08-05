@@ -17,9 +17,11 @@ import com.lol.fwen.progress.R;
 import com.lol.fwen.progress.asynctask.DownloadDataAsyncTask;
 import com.lol.fwen.progress.data.Feed;
 import com.lol.fwen.progress.data.FeedRequest;
+import com.lol.fwen.progress.data.FeedRequest.RequestType;
 import com.lol.fwen.progress.data.SocialNetWorkRequest;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RecyclerViewFragment extends Fragment {
 
@@ -33,7 +35,7 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     private OnFragmentInteractionListener mListener;
-    private RecyclerViewAdapter adapter;
+    private RecyclerViewAdapter adapter = null;
     private LayoutManagerType curLayoutManagerType;
     private RecyclerView.LayoutManager curLayoutManager;
 
@@ -49,23 +51,27 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(((FeedActivity)getActivity()).imageCache);
-        recyclerView.setAdapter(adapter);
+        if (adapter == null) {
+            adapter = new RecyclerViewAdapter(((FeedActivity) getActivity()).imageCache);
+        }
 
+        recyclerView.setAdapter(adapter);
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.rv_swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.d("swipeLayout", "OnRefresh");
-                updateList(((FeedActivity)getActivity()).requestMap);
+                updateList(((FeedActivity)getActivity()).requestTypes);
                 swipeLayout.setRefreshing(false);
             }
         });
@@ -152,12 +158,12 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateList(((FeedActivity)getActivity()).requestMap);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable(LAYOUT_MANAGER_KEY, curLayoutManagerType);
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -166,8 +172,15 @@ public class RecyclerViewFragment extends Fragment {
         void onFragmentItemClick(Feed item);
     }
 
-    public void updateList(HashMap<FeedRequest.RequestType, SocialNetWorkRequest> map) {
+    public void updateList(Set<RequestType> typeSet) {
         Log.e("updateList", "update");
-        new DownloadDataAsyncTask(recyclerView, adapter, map).execute();
+        Log.d("adapter count", adapter.getItemCount() + "");
+        HashSet<SocialNetWorkRequest> requestSet = new HashSet<>();
+
+        for (RequestType type : typeSet ) {
+            requestSet.add(FeedRequest.createRequest(type));
+        }
+
+        new DownloadDataAsyncTask(recyclerView, adapter, requestSet).execute();
     }
 }

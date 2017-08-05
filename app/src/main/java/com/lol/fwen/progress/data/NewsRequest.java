@@ -14,7 +14,11 @@ import java.util.Date;
 
 public class NewsRequest extends FeedRequest {
     String newsSource = "";
-    Date prevTime = new Date();
+    static Date prevTime = new Date();
+
+    static {
+        prevTime.setTime(0);
+    }
 
     NewsApiRequest request;
 
@@ -22,7 +26,6 @@ public class NewsRequest extends FeedRequest {
         Bundle params = new Bundle();
         final Feed.FeedSrc feedSrc = getSrc(newsSource);
 
-        prevTime.setTime(0);
         params.putString("source", newsSource);
         this.newsSource = newsSource;
         request = new NewsApiRequest(params, new NewsApiCallBack() {
